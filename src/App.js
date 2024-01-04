@@ -1,7 +1,6 @@
-import './App.css';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Home from './Components/Home';
-import React, { useState, useEffect } from 'react';
 import Login from './Components/Login';
 
 function App() {
@@ -49,9 +48,11 @@ function App() {
               )
             }
           />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          {/* Wildcard route for handling incorrect routes */}
           <Route
-            path="/login"
-            element={<Login onLogin={handleLogin} />}
+            path="*"
+            element={<Navigate to={authToken ? '/home' : '/login'} replace />}
           />
         </Routes>
       </BrowserRouter>
