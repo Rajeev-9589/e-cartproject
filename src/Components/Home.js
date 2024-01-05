@@ -59,11 +59,7 @@ function Home({ imagePath, Name }) {
     setItems(sortedItems);
   };
 
-  useEffect(() => {
-    // Perform actions based on the updated selectedCategory and selectedFilter here
-    console.log(selectedCategory);
-    console.log(selectedFilter);
-  }, [selectedCategory, selectedFilter]);
+
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -77,10 +73,10 @@ function Home({ imagePath, Name }) {
         if (data && data.products) {
           setItems(data.products);
         } else {
-          console.error("Invalid data format:", data);
+          alert("Invalid data format:", data);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        alert("Error fetching data:", error);
         // Handle error state here
       } finally {
         setLoading(false);
@@ -88,7 +84,31 @@ function Home({ imagePath, Name }) {
     };
   
     fetchAllProducts();
-  }, []);  
+  }, []); 
+  
+  const handlesearchedItem = async(title) => {
+    try {
+      const response = await fetch(
+        `https://dummyjson.com/products/search?q=${title}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data && data.products) {
+        setItems(data.products);
+      } else {
+        alert("Invalid data format:", data);
+      }
+    } catch (error) {
+      alert("Error fetching data:", error);
+      // Handle error state here
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAddToCart = (item, index) => {
     const isItemInCart = cart.find((cartItem) => cartItem.id === item.id);
@@ -137,6 +157,7 @@ function Home({ imagePath, Name }) {
           selectedCategory={selectedCategory}
           selectedFilter={selectedFilter}
           onCategoryFilterChange={handleCategoryFilterChange}
+          handlesearchedItem={handlesearchedItem}
         />
       </div>
       <strong className="text-3xl">

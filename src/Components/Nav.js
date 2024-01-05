@@ -11,15 +11,19 @@ function Nav({
   getTotalItems,
   getTotalPrice,
   onCategoryFilterChange,
+  handlesearchedItem,
   selectedCategory: propSelectedCategory,
   selectedFilter: propSelectedFilter,
+
 }) {
   const [categories, setCategories] = useState([]);
   const [Searchedthing, SetSearchedthing] = useState([]);
   const [VisibleSearching, SetVisibleSearching] = useState(false);
   const [SearchedWord, SetSearchedWord] = useState("");
   const [Cartopen, isCartOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(propSelectedCategory);
+
+  const [selectedCategory, setSelectedCategory] =
+    useState(propSelectedCategory);
   const [selectedFilter, setSelectedFilter] = useState(propSelectedFilter);
 
   const handleCategoryChange = (category) => {
@@ -28,7 +32,6 @@ function Nav({
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
-  
   };
 
   useEffect(() => {
@@ -36,7 +39,6 @@ function Nav({
       onCategoryFilterChange(selectedCategory, selectedFilter);
     }
   }, [selectedCategory, selectedFilter, onCategoryFilterChange]);
-
 
   const Searching = async (event) => {
     SetSearchedWord(event.target.value);
@@ -48,32 +50,12 @@ function Nav({
       const data = await response.json();
 
       if (data && data.products) {
-        const searchedProducts = data.products.map((product) => product.title);
-        SetSearchedthing(searchedProducts);
+        SetSearchedthing(data.products);
       } else {
         console.error("Invalid data format:", data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-    }
-  };
-  const getoneproduct = async () => {
-    try {
-      const response = await fetch(
-        `https://dummyjson.com/products/search?q=${SearchedWord}`
-      );
-      const data = await response.json();
-
-      if (data && data.products && data.products.length > 0) {
-        // Assuming data.products is an array of products
-        // You might want to handle the single product case differently if needed
-        const product = data.products[0];
-        setCategories([product.category]); // Assuming product has a category property
-      } else {
-        console.error("Invalid data format or no product found:", data);
-      }
-    } catch (error) {
-      console.error("Error fetching product:", error);
     }
   };
 
@@ -97,9 +79,6 @@ function Nav({
     getAllCategories();
   }, []);
 
-  const handlesearchedItem = () => {
-    getoneproduct();
-  };
   const Logout = () => {
     localStorage.removeItem("token");
     window.location.reload();
@@ -124,13 +103,13 @@ function Nav({
           {!VisibleSearching && SearchedWord.trim() === "" ? null : (
             <div className="text-black border-2 border-solid border-gray-500 w-72 h-32 mt-40 absolute flex z-20 ml-7 bg-white shadow-md overflow-auto">
               <ul>
-                {Searchedthing.map((searchedTitle, index) => (
+                {Searchedthing.map((product) => (
                   <li
                     className="text-pink-700 rounded-xl text-black hover:bg-pink-700 hover:text-white"
-                    key={index}
+                    key={product.title}
                   >
-                    <button onClick={handlesearchedItem}>
-                      <strong>{searchedTitle}</strong>
+                    <button onClick={() => handlesearchedItem(product.title)}>
+                      <strong>{product.title}</strong>
                     </button>
                   </li>
                 ))}

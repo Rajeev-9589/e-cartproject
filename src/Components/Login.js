@@ -32,7 +32,8 @@ function Login({ onLogin }) {
         onLogin({token,image,Name});
         navigate('/home');
       } else {
-        console.error('Login failed');
+        const errorData = await response.json(); 
+        alert(errorData.message || 'Error during login');
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -46,7 +47,7 @@ function Login({ onLogin }) {
   }, [navigate]);
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="border-2 border-green-500 border-dotted h-auto w-96 p-4 rounded-lg shadow-md bg-white">
+      <div className="border-2 border-pink-700 border-dotted h-auto w-96 p-4 rounded-lg shadow-md bg-white">
         <h1 className="text-2xl font-bold mb-4">Login To Ekart</h1>
         <div className="flex flex-col gap-5">
           <div className="flex flex-col mb-4 items-center">
